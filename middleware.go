@@ -17,9 +17,9 @@ var (
 
 const (
 	reqsName           = "chi_requests_total"
-	latencyName        = "chi_request_duration_milliseconds"
+	latencyName        = "chi_request_duration_seconds"
 	patternReqsName    = "chi_pattern_requests_total"
-	patternLatencyName = "chi_pattern_request_duration_milliseconds"
+	patternLatencyName = "chi_pattern_request_duration_seconds"
 )
 
 // Middleware is a handler that exposes prometheus metrics for the number of requests,
@@ -63,7 +63,7 @@ func (c Middleware) handler(next http.Handler) http.Handler {
 		ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
 		next.ServeHTTP(ww, r)
 		c.reqs.WithLabelValues(http.StatusText(ww.Status()), r.Method, r.URL.Path).Inc()
-		c.latency.WithLabelValues(http.StatusText(ww.Status()), r.Method, r.URL.Path).Observe(float64(time.Since(start).Nanoseconds()) / 1000000)
+		c.latency.WithLabelValues(http.StatusText(ww.Status()), r.Method, r.URL.Path).Observe(float64(time.Since(start).Seconds()))
 	}
 	return http.HandlerFunc(fn)
 }
@@ -108,7 +108,7 @@ func (c Middleware) patternHandler(next http.Handler) http.Handler {
 		routePattern = strings.Replace(routePattern, "/*/", "/", -1)
 
 		c.reqs.WithLabelValues(http.StatusText(ww.Status()), r.Method, routePattern).Inc()
-		c.latency.WithLabelValues(http.StatusText(ww.Status()), r.Method, routePattern).Observe(float64(time.Since(start).Nanoseconds()) / 1000000)
+		c.latency.WithLabelValues(http.StatusText(ww.Status()), r.Method, routePattern).Observe(float64(time.Since(start).Seconds()))
 	}
 	return http.HandlerFunc(fn)
 }
