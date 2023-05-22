@@ -58,9 +58,9 @@ func Test_Logger(t *testing.T) {
 		t.Errorf("body does not contain request duration entry '%s'", latencyName)
 	}
 
-	req1Count := `chi_request_duration_milliseconds_count{code="OK",method="GET",path="/ok",service="test"} 1`
-	req2Count := `chi_request_duration_milliseconds_count{code="OK",method="GET",path="/users/JoeBob",service="test"} 1`
-	req3Count := `chi_request_duration_milliseconds_count{code="OK",method="GET",path="/users/Misty",service="test"} 1`
+	req1Count := `chi_request_duration_seconds_count{code="OK",method="GET",path="/ok",service="test"} 1`
+	req2Count := `chi_request_duration_seconds_count{code="OK",method="GET",path="/users/JoeBob",service="test"} 1`
+	req3Count := `chi_request_duration_seconds_count{code="OK",method="GET",path="/users/Misty",service="test"} 1`
 
 	if !strings.Contains(body, req1Count) {
 		t.Errorf("body does not contain req1 count summary '%s'", req1Count)
@@ -122,10 +122,10 @@ func Test_PatternLogger(t *testing.T) {
 		t.Errorf("body does not contain request duration entry '%s'", patternLatencyName)
 	}
 
-	req1Count := `chi_pattern_request_duration_milliseconds_count{code="OK",method="GET",path="/ok",service="patternOnlyTest"} 1`
-	joeBobCount := `chi_pattern_request_duration_milliseconds_count{code="OK",method="GET",path="/users/JoeBob",service="patternOnlyTest"} 1`
-	mistyCount := `chi_pattern_request_duration_milliseconds_count{code="OK",method="GET",path="/users/Misty",service="patternOnlyTest"} 1`
-	firstNamePatternCount := `chi_pattern_request_duration_milliseconds_count{code="OK",method="GET",path="/users/{firstName}",service="patternOnlyTest"} 2`
+	req1Count := `chi_pattern_request_duration_seconds_count{code="OK",method="GET",path="/ok",service="patternOnlyTest"} 1`
+	joeBobCount := `chi_pattern_request_duration_seconds_count{code="OK",method="GET",path="/users/JoeBob",service="patternOnlyTest"} 1`
+	mistyCount := `chi_pattern_request_duration_seconds_count{code="OK",method="GET",path="/users/Misty",service="patternOnlyTest"} 1`
+	firstNamePatternCount := `chi_pattern_request_duration_seconds_count{code="OK",method="GET",path="/users/{firstName}",service="patternOnlyTest"} 2`
 
 	if !strings.Contains(body, req1Count) {
 		t.Errorf("body does not contain req1 count summary '%s'", req1Count)
@@ -193,10 +193,10 @@ func Test_MultipleLoggers(t *testing.T) {
 		t.Errorf("body does not contain request duration entry '%s'", patternLatencyName)
 	}
 
-	req1Count := `chi_pattern_request_duration_milliseconds_count{code="OK",method="GET",path="/ok",service="patternTest"} 1`
-	joeBobCount := `chi_request_duration_milliseconds_count{code="OK",method="GET",path="/users/JoeBob",service="pathTest"} 1`
-	mistyCount := `chi_request_duration_milliseconds_count{code="OK",method="GET",path="/users/Misty",service="pathTest"} 1`
-	firstNamePatternCount := `chi_pattern_request_duration_milliseconds_count{code="OK",method="GET",path="/users/{firstName}",service="patternTest"} 2`
+	req1Count := `chi_pattern_request_duration_seconds_count{code="OK",method="GET",path="/ok",service="patternTest"} 1`
+	joeBobCount := `chi_request_duration_seconds_count{code="OK",method="GET",path="/users/JoeBob",service="pathTest"} 1`
+	mistyCount := `chi_request_duration_seconds_count{code="OK",method="GET",path="/users/Misty",service="pathTest"} 1`
+	firstNamePatternCount := `chi_pattern_request_duration_seconds_count{code="OK",method="GET",path="/users/{firstName}",service="patternTest"} 2`
 
 	if !strings.Contains(body, req1Count) {
 		t.Errorf("body does not contain req1 count summary '%s'", req1Count)
