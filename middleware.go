@@ -3,6 +3,7 @@ package chiprometheus
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -62,8 +63,8 @@ func (c Middleware) handler(next http.Handler) http.Handler {
 		start := time.Now()
 		ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
 		next.ServeHTTP(ww, r)
-		c.reqs.WithLabelValues(http.StatusText(ww.Status()), r.Method, r.URL.Path).Inc()
-		c.latency.WithLabelValues(http.StatusText(ww.Status()), r.Method, r.URL.Path).Observe(float64(time.Since(start).Seconds()))
+		c.reqs.WithLabelValues(strconv.Itoa(ww.Status()), r.Method, r.URL.Path).Inc()
+		c.latency.WithLabelValues(strconv.Itoa(ww.Status()), r.Method, r.URL.Path).Observe(float64(time.Since(start).Seconds()))
 	}
 	return http.HandlerFunc(fn)
 }
@@ -107,8 +108,8 @@ func (c Middleware) patternHandler(next http.Handler) http.Handler {
 		routePattern := strings.Join(rctx.RoutePatterns, "")
 		routePattern = strings.Replace(routePattern, "/*/", "/", -1)
 
-		c.reqs.WithLabelValues(http.StatusText(ww.Status()), r.Method, routePattern).Inc()
-		c.latency.WithLabelValues(http.StatusText(ww.Status()), r.Method, routePattern).Observe(float64(time.Since(start).Seconds()))
+		c.reqs.WithLabelValues(strconv.Itoa(ww.Status()), r.Method, routePattern).Inc()
+		c.latency.WithLabelValues(strconv.Itoa(ww.Status()), r.Method, routePattern).Observe(float64(time.Since(start).Seconds()))
 	}
 	return http.HandlerFunc(fn)
 }
